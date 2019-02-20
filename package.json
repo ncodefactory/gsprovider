@@ -1,15 +1,14 @@
 {
   "name": "@ncodefactory/gsprovider",
-  "version": "0.0.0",
-  "private": false,
-  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "license": "MIT",
   "author": {
     "name": "Bartosz Solarski",
     "email": "bartosz.solarski@hotmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/compsoftdevelopers/gsprovider"
+    "url": "ncodefactory/gsprovider"
   },
   "main": "./dist/index.js",
   "scripts": {
