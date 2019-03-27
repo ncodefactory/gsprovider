@@ -1,10 +1,26 @@
-import { gsstate } from './gsprovider';
+import { gsstate, gscmd } from './gsprovider';
 
 (async () => {
   try {
-    const stateReder = gsstate('192.168.2.88', 9000);
-    const state = await stateReder(1);
+    const stateReader = gsstate('192.168.2.88', 9000);
+    const state = await stateReader(1);
     console.log(state); // eslint-disable-line no-console
+  } catch (error) {
+    console.log(error); // eslint-disable-line no-console
+  }
+  try {
+    const cmdWriter = gscmd('192.168.2.88', 9001);
+    const cmdOk = await cmdWriter({
+      command: 1,
+      commandKey: 0,
+      sr: 'bs-v5',
+      sv: 1,
+      nrstatus: 0,
+      id_zlecenia: 0,
+      id_operatora: 1,
+      operator_txt: 'bsolarski',
+    });
+    console.log(cmdOk); // eslint-disable-line no-console
   } catch (error) {
     console.log(error); // eslint-disable-line no-console
   }
