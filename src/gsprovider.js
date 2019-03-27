@@ -210,7 +210,7 @@ const gsquery = ({
   }
 });
 
-const gsstatus = (host, port, timeout = 3000) => sv => gsquery({
+const gsstate = (host, port, timeout = 3000) => sv => gsquery({
   host,
   port,
   timeout,
@@ -221,4 +221,4 @@ const gsstatus = (host, port, timeout = 3000) => sv => gsquery({
   index: 0,
 });
 
-export { gsstatus }; // eslint-disable-line import/prefer-default-export
+export { gsstate }; // eslint-disable-line import/prefer-default-export

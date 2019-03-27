@@ -1,10 +1,10 @@
-import { gsstatus } from './gsprovider';
+import { gsstate } from './gsprovider';
 
 (async () => {
   try {
-    const statusReder = gsstatus('192.168.2.88', 9000);
-    const status = await statusReder(1);
-    console.log(status); // eslint-disable-line no-console
+    const stateReder = gsstate('192.168.2.88', 9000);
+    const state = await stateReder(1);
+    console.log(state); // eslint-disable-line no-console
   } catch (error) {
     console.log(error); // eslint-disable-line no-console
   }
