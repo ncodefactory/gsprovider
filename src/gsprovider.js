@@ -192,7 +192,7 @@ const statusToJSON = (buffer) => {
   return result;
 };
 
-const gsquery = ({
+const gsreadstate = ({
   host, port, timeout, sv, autoryzacja, command, asService, index,
 }) => new Promise(async (resolve, reject) => {
   try {
@@ -210,7 +210,7 @@ const gsquery = ({
   }
 });
 
-const gsstate = (host, port, timeout = 3000) => sv => gsquery({
+const gsstate = (host, port, timeout = 3000) => sv => gsreadstate({
   host,
   port,
   timeout,
