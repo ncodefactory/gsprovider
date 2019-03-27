@@ -53,5 +53,7 @@
     "prettier-eslint": "^8.8.2",
     "shx": "^0.3.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@ncodefactory/tcpipcli": "^1.0.0"
+  }
 }

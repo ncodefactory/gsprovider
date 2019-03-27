@@ -1,4 +1,4 @@
-import tcpclient from './tcpclient';
+import tcpclient from '@ncodefactory/tcpipcli';
 
 const millisecond = 1.1574074074074073e-8;
 
