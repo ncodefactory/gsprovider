@@ -11,7 +11,8 @@
       "program": "${workspaceRoot}/src/app.js",
       "outFiles": ["${workspaceRoot}/.compiled/**/*.js"],
       "internalConsoleOptions": "openOnSessionStart",
-      "runtimeExecutable": "/home/${env:USER}/.nvm/versions/node/v10.15.1/bin/node",
+      "runtimeExecutable": "node",
+      "preLaunchTask": "compile"
     },
     {
       "type": "node",
@@ -20,7 +21,8 @@
       "program": "${file}",
       "outFiles": ["${workspaceRoot}/.compiled/**/*.js"],
       "internalConsoleOptions": "openOnSessionStart",
-      "runtimeExecutable": "/home/${env:USER}/.nvm/versions/node/v10.15.1/bin/node",
+      "runtimeExecutable": "node",
+      "preLaunchTask": "compile"
     },
     {
       "name": "DEBUG All Tests",
@@ -39,7 +41,8 @@
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
       "outFiles": ["${workspaceRoot}/.compiled/**/*.js"],
-      "internalConsoleOptions": "openOnSessionStart"
+      "internalConsoleOptions": "openOnSessionStart",
+      "preLaunchTask": "compile"
     },
     {
       "name": "RUN Current Test File (without debugging)",
@@ -51,7 +54,7 @@
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/.compiled/**/*.js"]
+      "outFiles": ["${workspaceRoot}/.compiled/**/*.js"],
     }
   ]
 }
