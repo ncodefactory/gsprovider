@@ -120,6 +120,12 @@ const readEventListItem = (data) => {
   return result;
 };
 
+const writeByte = (data, value) => {
+  data.buffer[data.index] = value; // eslint-disable-line no-param-reassign
+  data.index += 1; // eslint-disable-line no-param-reassign
+  return data.buffer;
+};
+
 const writeInt16 = (data, value) => {
   const result = data.buffer.writeUInt16LE(value, data.index);
   data.index += 2; // eslint-disable-line no-param-reassign
@@ -132,13 +138,26 @@ const writeInt32 = (data, value) => {
   return result;
 };
 
+const writeFloat = (data, value) => {
+  const result = data.buffer.writeFloatLE(value, data.index);
+  data.index += 4; // eslint-disable-line no-param-reassign
+  return result;
+};
+
 const writeBool = (data, value) => {
   const result = data.buffer.writeInt32LE(value === true ? 1 : 0, data.index);
   data.index += 4; // eslint-disable-line no-param-reassign
   return result;
 };
 
-const statusToJSON = (buffer) => {
+const writeString = (data, value, length) => {
+  const buffer = Buffer.alloc(length);
+  const result = buffer.write(value || '');
+  data.index += length; // eslint-disable-line no-param-reassign
+  return result;
+};
+
+const stateToJSON = (buffer) => {
   const result = {};
   const data = { buffer, index: 0 };
   result.command = readInt16(data);
@@ -192,11 +211,11 @@ const statusToJSON = (buffer) => {
   return result;
 };
 
-const gsreadstate = ({
+const gsReadState = ({
   host, port, timeout, sv, autoryzacja, command, asService, index,
 }) => new Promise(async (resolve, reject) => {
   try {
-    const request = Buffer.allocUnsafe(16);
+    const request = Buffer.alloc(16);
     const data = { index: 0, buffer: request };
     writeInt32(data, autoryzacja);
     writeInt16(data, sv);
@@ -204,13 +223,13 @@ const gsreadstate = ({
     writeBool(data, asService);
     writeInt16(data, index);
     const response = await tcpclient(host, port, timeout)(request);
-    resolve(statusToJSON(response));
+    resolve(stateToJSON(response));
   } catch (error) {
     reject(error);
   }
 });
 
-const gsstate = (host, port, timeout = 3000) => sv => gsreadstate({
+const gsstate = (host, port, timeout = 3000) => sv => gsReadState({
   host,
   port,
   timeout,
@@ -221,4 +240,162 @@ const gsstate = (host, port, timeout = 3000) => sv => gsreadstate({
   index: 0,
 });
 
-export { gsstate }; // eslint-disable-line import/prefer-default-export
+const cmdOkToJSON = (buffer) => {
+  const result = {};
+  const data = { buffer, index: 0 };
+  result.code = readInt32(data);
+  result.dt = readDate(data);
+  return result;
+};
+
+/* eslint-disable camelcase */
+const gsWriteCommand = ({
+  host,
+  port,
+  timeout,
+  command,
+  commandKey,
+  sv,
+  test,
+  nrstatus,
+  id_zlecenia,
+  id_operatora,
+  operator_txt,
+  produkt,
+  zlecenie,
+  opis,
+  tools,
+  tool_id,
+  gniazdo,
+  pakiet,
+  zamowienie,
+  optcc,
+  nocc,
+  optw,
+  optgniazd,
+  optgramatura,
+  gramatura2,
+  optcP,
+  optcU,
+  inspekcja,
+  inspekcja_txt,
+  id_pbw,
+  id_opp,
+  id_rezerwa,
+  id_pur,
+  pur_txt,
+  sr,
+}) => new Promise(async (resolve, reject) => {
+  try {
+    const request = Buffer.alloc(1008);
+    const data = { index: 0, buffer: request };
+    writeByte(data, command);
+    writeInt32(data, commandKey);
+    writeInt16(data, sv);
+    writeInt32(data, test);
+    writeByte(data, nrstatus);
+    writeInt32(data, id_zlecenia);
+    writeInt32(data, id_operatora);
+    writeString(data, operator_txt, 80);
+    writeString(data, produkt, 100);
+    writeString(data, zlecenie, 100);
+    writeString(data, opis, 200);
+    writeString(data, tools, 100);
+    writeInt32(data, tool_id);
+    writeFloat(data, gniazdo);
+    writeFloat(data, pakiet);
+    writeInt32(data, zamowienie);
+    writeInt32(data, optcc);
+    writeFloat(data, nocc);
+    writeInt32(data, optw);
+    writeInt32(data, optgniazd);
+    writeFloat(data, optgramatura);
+    writeFloat(data, gramatura2);
+    writeInt32(data, optcP);
+    writeInt32(data, optcU);
+    writeInt32(data, inspekcja);
+    writeString(data, inspekcja_txt, 150);
+    writeInt32(data, id_pbw);
+    writeInt32(data, id_opp);
+    writeInt32(data, id_rezerwa);
+    writeInt32(data, id_pur);
+    writeString(data, pur_txt, 80);
+    writeString(data, sr, 100);
+    const response = await tcpclient(host, port, timeout)(request);
+    resolve(cmdOkToJSON(response));
+  } catch (error) {
+    reject(error);
+  }
+});
+
+const gscmd = (host, port, timeout = 3000) => ({
+  command,
+  commandKey,
+  sv,
+  nrstatus,
+  id_zlecenia,
+  id_operatora,
+  operator_txt,
+  produkt,
+  zlecenie,
+  opis,
+  tools,
+  tool_id,
+  gniazdo,
+  pakiet,
+  zamowienie,
+  optcc,
+  nocc,
+  optw,
+  optgniazd,
+  optgramatura,
+  gramatura2,
+  optcP,
+  optcU,
+  inspekcja,
+  inspekcja_txt,
+  id_pbw,
+  id_opp,
+  id_rezerwa,
+  id_pur,
+  pur_txt,
+  sr,
+}) => gsWriteCommand({
+  host,
+  port,
+  timeout,
+  command,
+  commandKey,
+  sv,
+  test: 5678,
+  nrstatus,
+  id_zlecenia,
+  id_operatora,
+  operator_txt,
+  produkt,
+  zlecenie,
+  opis,
+  tools,
+  tool_id,
+  gniazdo,
+  pakiet,
+  zamowienie,
+  optcc,
+  nocc,
+  optw,
+  optgniazd,
+  optgramatura,
+  gramatura2,
+  optcP,
+  optcU,
+  inspekcja,
+  inspekcja_txt,
+  id_pbw,
+  id_opp,
+  id_rezerwa,
+  id_pur,
+  pur_txt,
+  sr,
+}); /* eslint-enable camelcase */
+
+export { gsstate, gscmd };
