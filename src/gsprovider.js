@@ -32,20 +32,17 @@ const readFloat = (data) => {
   return result;
 };
 
-const readDate = (data) => {
-  const result = data.buffer.readDoubleLE(data.index);
-  data.index += 8; // eslint-disable-line no-param-reassign
-  const milliseconds = result / millisecond;
-  const date = new Date(1899, 12, 30, 0, 0, 0);
+const doubleToDate = (value) => {
+  const milliseconds = value / millisecond;
+  const date = new Date(1899, 11, 30, 0, 0, 0);
   date.setMilliseconds(date.getMilliseconds() + milliseconds);
   return date;
 };
 
-const doubleToDate = (value) => {
-  const milliseconds = value / millisecond;
-  const date = new Date(1899, 12, 30, 0, 0, 0);
-  date.setMilliseconds(date.getMilliseconds() + milliseconds);
-  return date;
+const readDate = (data) => {
+  const result = data.buffer.readDoubleLE(data.index);
+  data.index += 8; // eslint-disable-line no-param-reassign
+  return doubleToDate(result);
 };
 
 const readct = (data) => {
@@ -402,4 +399,4 @@ const gscmd = (host, port, timeout = 3000) => ({
   sr,
 }); /* eslint-enable camelcase */
 
-export { gsstate, gscmd };
+export { gsstate, gscmd, doubleToDate };
