@@ -68,3 +68,4 @@ test-results/
 
 # Prepared for npm's publish
 dist/
+package-lock.json

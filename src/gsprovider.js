@@ -41,6 +41,13 @@ const readDate = (data) => {
   return date;
 };
 
+const doubleToDate = (value) => {
+  const milliseconds = value / millisecond;
+  const date = new Date(1899, 12, 30, 0, 0, 0);
+  date.setMilliseconds(date.getMilliseconds() + milliseconds);
+  return date;
+};
+
 const readct = (data) => {
   const result = {};
   result.cykle = readInt32(data);
@@ -208,9 +215,9 @@ const gsstate = (host, port, timeout = 3000) => sv => gsReadState({
 
 const cmdOkToJSON = (buffer) => {
   const result = {};
-  const data = { buffer, index: 0 };
-  result.code = readInt32(data);
-  result.dt = readDate(data);
+  result.code = buffer.readUInt32LE(0);
+  const value = buffer.readDoubleLE(8);
+  result.dt = doubleToDate(value);
   return result;
 };
 
