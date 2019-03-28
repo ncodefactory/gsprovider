@@ -2,36 +2,6 @@ import tcpclient from '@ncodefactory/tcpipcli';
 
 const millisecond = 1.1574074074074073e-8;
 
-const readInt8 = (data) => {
-  const result = data.buffer.readUInt8(data.index);
-  data.index += 1; // eslint-disable-line no-param-reassign
-  return result;
-};
-
-const readInt16 = (data) => {
-  const result = data.buffer.readUInt16LE(data.index);
-  data.index += 2; // eslint-disable-line no-param-reassign
-  return result;
-};
-
-const readInt32 = (data) => {
-  const result = data.buffer.readUInt32LE(data.index);
-  data.index += 4; // eslint-disable-line no-param-reassign
-  return result;
-};
-
-const readDouble = (data) => {
-  const result = data.buffer.readDoubleLE(data.index);
-  data.index += 12; // eslint-disable-line no-param-reassign
-  return result;
-};
-
-const readFloat = (data) => {
-  const result = data.buffer.readFloatLE(data.index);
-  data.index += 4; // eslint-disable-line no-param-reassign
-  return result;
-};
-
 const doubleToDate = (value) => {
   const milliseconds = value / millisecond;
   const date = new Date(1899, 11, 30, 0, 0, 0);
@@ -39,141 +9,144 @@ const doubleToDate = (value) => {
   return date;
 };
 
-const readDate = (data) => {
-  const result = data.buffer.readDoubleLE(data.index);
-  data.index += 8; // eslint-disable-line no-param-reassign
-  return doubleToDate(result);
-};
-
-const readct = (data) => {
+const readct = (buffer, offset) => {
   const result = {};
-  result.cykle = readInt32(data);
-  result.cykleG = readDouble(data);
-  result.time = readInt32(data);
-  result.t_mp = readInt32(data);
-  result.t_awarii = readInt32(data);
-  result.t_przezbrajania = readInt32(data);
-  result.t_ustawiania = readInt32(data);
-  result.t_postojP = readInt32(data);
-  result.t_postojNP = readInt32(data);
-  result.t_none = readInt32(data);
-  result.c_awarii = readInt16(data);
-  result.c_przezbrajania = readInt16(data);
-  result.c_ustawiania = readInt16(data);
-  result.c_postojP = readInt16(data);
-  result.c_postojNP = readInt16(data);
-  result.c_none = readInt16(data);
-  result.kwh = readDouble(data);
-  result.braki = readFloat(data);
-  result.gramatura = readDouble(data);
-  result.gramatura2 = readFloat(data);
-  result.kwh_pp = readFloat(data);
-  result.kwh_pnp = readFloat(data);
-  result.kwh_pust = readFloat(data);
-  result.kwh_awarie = readFloat(data);
+  result.cykle = buffer.readUInt32LE(offset);
+  result.cykleG = buffer.readDoubleLE(offset + 8);
+  result.time = buffer.readUInt32LE(offset + 16);
+  result.t_mp = buffer.readUInt32LE(offset + 20);
+  result.t_awarii = buffer.readUInt32LE(offset + 24);
+  result.t_przezbrajania = buffer.readUInt32LE(offset + 28);
+  result.t_ustawiania = buffer.readUInt32LE(offset + 32);
+  result.t_postojP = buffer.readUInt32LE(offset + 36);
+  result.t_postojNP = buffer.readUInt32LE(offset + 40);
+  result.t_none = buffer.readUInt32LE(offset + 44);
+  result.c_awarii = buffer.readUInt16LE(offset + 48);
+  result.c_przezbrajania = buffer.readUInt16LE(offset + 50);
+  result.c_ustawiania = buffer.readUInt16LE(offset + 52);
+  result.c_postojP = buffer.readUInt16LE(offset + 54);
+  result.c_postojNP = buffer.readUInt16LE(offset + 56);
+  result.c_none = buffer.readUInt16LE(offset + 58);
+  result.kwh = buffer.readDoubleLE(offset + 64);
+  result.braki = buffer.readFloatLE(offset + 72);
+  result.gramatura = buffer.readDoubleLE(offset + 80);
+  result.gramatura2 = buffer.readFloatLE(offset + 88);
+  result.kwh_pp = buffer.readFloatLE(offset + 92);
+  result.kwh_pnp = buffer.readFloatLE(offset + 96);
+  result.kwh_pust = buffer.readFloatLE(offset + 100);
+  result.kwh_awarie = buffer.readFloatLE(offset + 104);
   result.RSTime = [
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
-    readInt32(data),
+    buffer.readUInt32LE(offset + 108),
+    buffer.readUInt32LE(offset + 112),
+    buffer.readUInt32LE(offset + 116),
+    buffer.readUInt32LE(offset + 120),
+    buffer.readUInt32LE(offset + 124),
+    buffer.readUInt32LE(offset + 128),
+    buffer.readUInt32LE(offset + 132),
+    buffer.readUInt32LE(offset + 136),
+    buffer.readUInt32LE(offset + 140),
+    buffer.readUInt32LE(offset + 144),
+    buffer.readUInt32LE(offset + 148),
+    buffer.readUInt32LE(offset + 150),
+    buffer.readUInt32LE(offset + 154),
+    buffer.readUInt32LE(offset + 158),
+    buffer.readUInt32LE(offset + 162),
+    buffer.readUInt32LE(offset + 166),
+    buffer.readUInt32LE(offset + 170),
+    buffer.readUInt32LE(offset + 174),
+    buffer.readUInt32LE(offset + 178),
+    buffer.readUInt32LE(offset + 180),
   ];
-  result.t_andon = readInt32(data);
-  result.t_andont = readInt32(data);
-  result.c_andon = readInt16(data);
-  result.c_andont = readInt16(data);
+  result.t_andon = buffer.readUInt32LE(offset + 188);
+  result.t_andont = buffer.readUInt32LE(offset + 192);
+  result.c_andon = buffer.readUInt32LE(offset + 196);
+  result.c_andont = buffer.readUInt32LE(offset + 198);
 
   return result;
 };
 
-const readev = (data) => {
+const readev = (buffer, offset) => {
   const result = {};
-  result.tev = readDate(data);
-  result.tevoff = readDate(data);
-  result.tevstatus = readDate(data);
-  result.tevseria = readDate(data);
-  result.tevoperator = readDate(data);
-  result.tevandon = readDate(data);
-  result.tevalert = readDate(data);
-  result.tev_rezerwa = readDate(data);
-
+  let value = buffer.readDoubleLE(offset);
+  result.tev = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 8);
+  result.tevoff = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 16);
+  result.tevstatus = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 24);
+  result.tevseria = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 32);
+  result.tevoperator = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 40);
+  result.tevandon = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 48);
+  result.tevalert = doubleToDate(value);
+  value = buffer.readDoubleLE(offset + 56);
+  result.tev_rezerwa = doubleToDate(value);
   return result;
 };
 
-const readEventListItem = (data) => {
+const readEventListItem = (buffer, offset) => {
   const result = {};
-  result.typ = readInt32(data);
-  result.v = readInt32(data);
-  result.czas = readDate(data);
+  result.typ = buffer.readUInt8(offset);
+  result.v = buffer.readUInt32LE(offset + 4);
+  const value = buffer.readDoubleLE(offset + 8);
+  result.czas = doubleToDate(value);
 
   return result;
 };
 
 const stateToJSON = (buffer) => {
   const result = {};
-  const data = { buffer, index: 0 };
-  result.command = readInt16(data);
-  result.sv = readInt16(data);
-  result.stacja = readInt16(data);
-  result.index = readInt16(data);
-  result.start_stacji = readDate(data);
-  result.aktualizacja_wykresow = readDate(data);
-  result.noSys = readInt16(data);
-  result.ErrorCode = readInt16(data);
-  result.id_zlecemia = readInt32(data);
-  result.id_operatora = readInt32(data);
-  result.id_ur = readInt32(data);
-  result.NrStatus = readInt8(data);
-  result.NrStatusRS = readInt8(data);
-  result.bityb = readInt8(data);
-  result.bityb2 = readInt8(data);
-  data.index += 4;
-  result.ct = [readct(data), readct(data), readct(data), readct(data)];
-  result.ev = readev(data);
+  result.command = buffer.readInt8(0);
+  result.sv = buffer.readUInt16LE(2);
+  result.stacja = buffer.readInt8(4);
+  result.index = buffer.readUInt16LE(6);
+  let value = buffer.readDoubleLE(8);
+  result.start_stacji = doubleToDate(value);
+  value = buffer.readDoubleLE(16);
+  result.aktualizacja_wykresow = doubleToDate(value);
+  result.noSys = buffer.readInt8(24);
+  result.ErrorCode = buffer.readInt8(25);
+  result.id_zlecenia = buffer.readUInt32LE(28);
+  result.id_operatora = buffer.readUInt32LE(32);
+  result.id_ur = buffer.readUInt32LE(36);
+  result.NrStatus = buffer.readInt8(40);
+  result.NrStatusRS = buffer.readInt8(41);
+  result.bityb = buffer.readInt8(42);
+  result.bityb2 = buffer.readInt8(43);
+
+  result.ct = [readct(buffer, 48), readct(buffer, 248), readct(buffer, 448), readct(buffer, 648)];
+  result.ev = readev(buffer, 848);
   result.EventList = [
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
-    readEventListItem(data),
+    readEventListItem(buffer, 912),
+    readEventListItem(buffer, 928),
+    readEventListItem(buffer, 944),
+    readEventListItem(buffer, 960),
+    readEventListItem(buffer, 976),
+    readEventListItem(buffer, 992),
+    readEventListItem(buffer, 1008),
+    readEventListItem(buffer, 1024),
+    readEventListItem(buffer, 1040),
+    readEventListItem(buffer, 1056),
+    readEventListItem(buffer, 1072),
+    readEventListItem(buffer, 1088),
+    readEventListItem(buffer, 1104),
+    readEventListItem(buffer, 1120),
+    readEventListItem(buffer, 1136),
+    readEventListItem(buffer, 1152),
+    readEventListItem(buffer, 1168),
+    readEventListItem(buffer, 1184),
+    readEventListItem(buffer, 1200),
+    readEventListItem(buffer, 1216),
   ];
-  result.CzasCyklu = readInt32(data);
-  result.CzasCykl2 = readInt32(data);
-  result.Wydajnosc = readInt32(data);
-  result.Sek0undOdOstatniegoCyklu = readInt32(data);
-  result.cmms = readInt32(data);
-  result.cmms2 = readInt32(data);
-  result.andon = readInt8(data);
+  result.CzasCyklu = buffer.readUInt32LE(1232);
+  result.CzasCykl2 = buffer.readUInt32LE(1236);
+  result.Wydajnosc = buffer.readUInt32LE(1240);
+  result.Sek0undOdOstatniegoCyklu = buffer.readUInt32LE(1244);
+  result.cmms = buffer.readUInt32LE(1248);
+  result.cmms2 = buffer.readUInt32LE(1252);
+  result.andon = buffer.readUInt8(1256);
 
   return result;
 };
@@ -399,4 +372,4 @@ const gscmd = (host, port, timeout = 3000) => ({
   sr,
 }); /* eslint-enable camelcase */
 
-export { gsstate, gscmd, doubleToDate };
+export { gsstate, gscmd };

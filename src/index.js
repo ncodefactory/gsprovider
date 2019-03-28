@@ -1,3 +1,3 @@
-import { gsstate } from './gsprovider';
+import { gsstate, gscmd } from './gsprovider';
 
-export { gsstate }; // eslint-disable-line import/prefer-default-export
+export { gsstate, gscmd }; // eslint-disable-line import/prefer-default-export
