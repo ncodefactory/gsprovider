@@ -10,7 +10,7 @@ import { gsstate, gscmd } from './gsprovider';
   }
   try {
     const cmdWriter = gscmd('192.168.2.88', 9001);
-    const cmdOk = await cmdWriter({
+    const command = {
       command: 1,
       commandKey: 0,
       sr: 'bs-v5',
@@ -19,7 +19,8 @@ import { gsstate, gscmd } from './gsprovider';
       id_zlecenia: 0,
       id_operatora: 1,
       operator_txt: 'bsolarski',
-    });
+    };
+    const cmdOk = await cmdWriter(command);
     console.log(cmdOk); // eslint-disable-line no-console
   } catch (error) {
     console.log(error); // eslint-disable-line no-console
