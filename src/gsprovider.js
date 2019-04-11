@@ -1,3 +1,4 @@
+import iconv from 'iconv-lite';
 import tcpclient from '@ncodefactory/tcpipcli';
 
 const millisecond = 1.1574074074074073e-8;
@@ -193,8 +194,11 @@ const cmdOkToJSON = (buffer) => {
 
 const writeString = (buffer, offset, text) => {
   if (text != null) {
-    buffer.writeInt8(text.length, offset);
-    buffer.write(text, offset + 1);
+    const buf = iconv.encode(text, 'win1250');
+    buffer.writeInt8(buf.length, offset);
+    for (let i = 1; i <= buf.length; i += 1) {
+      buffer[offset + i] = buf[i - 1]; // eslint-disable-line no-param-reassign
+    }
   }
 };
 

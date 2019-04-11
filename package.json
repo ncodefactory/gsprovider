@@ -54,6 +54,7 @@
     "shx": "^0.3.2"
   },
   "dependencies": {
-    "@ncodefactory/tcpipcli": "^1.0.0"
+    "@ncodefactory/tcpipcli": "^1.0.0",
+    "iconv-lite": "^0.4.24"
   }
 }

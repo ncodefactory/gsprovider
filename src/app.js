@@ -12,9 +12,7 @@ import { gsstate, gscmd } from './gsprovider';
     const cmdWriter = gscmd('192.168.2.88', 9001);
     const command = {
       command: 1,
-      commandKey: 0,
-      sr: 'bs-v5',
-      sv: 1,
+      sv: 3,
       nrstatus: 0,
       id_zlecenia: 0,
       id_operatora: 1,
