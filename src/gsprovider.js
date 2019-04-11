@@ -191,6 +191,13 @@ const cmdOkToJSON = (buffer) => {
   return result;
 };
 
+const writeString = (buffer, offset, text) => {
+  if (text != null) {
+    buffer.writeInt8(text.length, offset);
+    buffer.write(text, offset + 1);
+  }
+};
+
 /* eslint-disable camelcase */
 const gsWriteCommand = ({
   host,
@@ -238,62 +245,31 @@ const gsWriteCommand = ({
     request.writeInt8(nrstatus, 16);
     request.writeInt32LE(id_zlecenia, 20);
     request.writeInt32LE(id_operatora, 24);
-    if (operator_txt != null) {
-      request.writeInt8(operator_txt.length, 28);
-      request.write(operator_txt, 29);
-    }
-
-    if (produkt != null) {
-      request.writeInt8(produkt.length, 109);
-      request.write(operator_txt, 110);
-    }
-
-    if (zlecenie != null) {
-      request.writeInt8(zlecenie.length, 210);
-      request.write(zlecenie, 211);
-    }
-
-    if (opis != null) {
-      request.writeInt8(opis.length, 311);
-      request.write(opis, 312);
-    }
-
-    if (tools != null) {
-      request.writeInt8(tools.length, 512);
-      request.write(tools, 513);
-    }
-
+    writeString(request, 28, operator_txt);
+    writeString(request, 109, produkt);
+    writeString(request, 210, zlecenie);
+    writeString(request, 311, opis);
+    writeString(request, 512, tools);
     request.writeInt32LE(toll_id, 616);
-    request.writeFloatLE(gniazdo, 620);
-    request.writeFloatLE(pakiet, 624);
+    request.writeFloatLE(gniazdo || 0, 620);
+    request.writeFloatLE(pakiet || 0, 624);
     request.writeInt32LE(zamowienie, 628);
     request.writeInt32LE(optcc, 632);
-    request.writeFloatLE(nocc, 636);
+    request.writeFloatLE(nocc || 0, 636);
     request.writeInt32LE(optw, 640);
     request.writeInt32LE(optgniazd, 644);
-    request.writeFloatLE(optgramatura, 648);
-    request.writeFloatLE(gramatura2, 652);
+    request.writeFloatLE(optgramatura || 0, 648);
+    request.writeFloatLE(gramatura2 || 0, 652);
     request.writeInt32LE(optcP, 656);
     request.writeInt32LE(optcU, 660);
     request.writeInt32LE(inspekcja, 664);
-    if (inspekcja_txt != null) {
-      request.writeInt8(inspekcja_txt.length, 668);
-      request.write(inspekcja_txt, 669);
-    }
-
+    writeString(request, 668, inspekcja_txt);
     request.writeInt32LE(id_pbw, 820);
     request.writeInt32LE(id_opp, 824);
     request.writeInt32LE(id_rezerwa, 828);
     request.writeInt32LE(id_pur, 832);
-    if (pur_txt != null) {
-      request.writeInt8(pur_txt.length, 836);
-      request.write(pur_txt, 837);
-    }
-
-    if (sr != null) {
-      request.writeInt8(sr.length, 917);
-      request.write(sr, 918);
-    }
+    writeString(request, 836, pur_txt);
+    writeString(request, 917, sr);
 
     const response = await tcpclient(host, port, timeout)(request);
     resolve(cmdOkToJSON(response));
