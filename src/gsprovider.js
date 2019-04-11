@@ -192,9 +192,9 @@ const cmdOkToJSON = (buffer) => {
   return result;
 };
 
-const writeString = (buffer, offset, text) => {
+const writeString = (buffer, offset, text, maxLength) => {
   if (text != null) {
-    const buf = iconv.encode(text, 'win1250');
+    const buf = iconv.encode(text.substring(0, maxLength), 'win1250');
     buffer.writeInt8(buf.length, offset);
     for (let i = 1; i <= buf.length; i += 1) {
       buffer[offset + i] = buf[i - 1]; // eslint-disable-line no-param-reassign
@@ -249,11 +249,11 @@ const gsWriteCommand = ({
     request.writeInt8(nrstatus, 16);
     request.writeInt32LE(id_zlecenia, 20);
     request.writeInt32LE(id_operatora, 24);
-    writeString(request, 28, operator_txt);
-    writeString(request, 109, produkt);
-    writeString(request, 210, zlecenie);
-    writeString(request, 311, opis);
-    writeString(request, 512, tools);
+    writeString(request, 28, operator_txt, 80);
+    writeString(request, 109, produkt, 100);
+    writeString(request, 210, zlecenie, 100);
+    writeString(request, 311, opis, 200);
+    writeString(request, 512, tools, 100);
     request.writeInt32LE(toll_id, 616);
     request.writeFloatLE(gniazdo || 0, 620);
     request.writeFloatLE(pakiet || 0, 624);
@@ -267,13 +267,13 @@ const gsWriteCommand = ({
     request.writeInt32LE(optcP, 656);
     request.writeInt32LE(optcU, 660);
     request.writeInt32LE(inspekcja, 664);
-    writeString(request, 668, inspekcja_txt);
+    writeString(request, 668, inspekcja_txt, 150);
     request.writeInt32LE(id_pbw, 820);
     request.writeInt32LE(id_opp, 824);
     request.writeInt32LE(id_rezerwa, 828);
     request.writeInt32LE(id_pur, 832);
-    writeString(request, 836, pur_txt);
-    writeString(request, 917, sr);
+    writeString(request, 836, pur_txt, 80);
+    writeString(request, 917, sr, 100);
 
     const response = await tcpclient(host, port, timeout)(request);
     resolve(cmdOkToJSON(response));
